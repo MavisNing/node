@@ -51,3 +51,70 @@ exports.handleTopicCreat = (req, res) => {
         });
     });
 }
+
+// 文章详情页
+exports.showTopic = (req, res) => {
+    // console.log(req.params);
+    const body = req.params.TopicId;
+    mTopic.handleShowTopic(body, (err, results) => {
+        if (err) {
+            return res.send({
+                code: 500,
+                msg: '服务器出错啦！！'
+            })
+        }
+
+        res.render("topic/show.html", {
+            list: results[0],
+            sessionUserId: req.session.user ? req.session.user.id : 0 
+        });
+    });
+}
+
+// 文章详情页删除功能
+exports.handleDeleteTopic = (req, res) => {
+    const body = req.params.TopicId;
+    mTopic.DeleteTopic(body, (err, results) => {
+        if (err) {
+            return res.send({
+                code: 500,
+                msg: '服务器出错啦！！'
+            })
+        }
+        res.redirect("/");
+    });  
+}
+
+// 文章详情页编辑功能
+// 读取
+exports.showEditTopic = (req, res) => {
+    const body = req.params.TopicId;
+    mTopic.EditTopicShow(body, (err, results) => {
+        if (err) {
+            return res.send({
+                code: 500,
+                msg: '服务器错了啊！'
+            })
+        }
+        res.render("topic/edit.html", {
+            list: results[0]
+        });
+    })
+}
+// 编辑
+exports.handleEditTopic = (req, res) => {
+    const topicID = req.params.TopicId;
+    const body = req.body;
+    mTopic.EditTopic(body, topicID, (err, results) => {
+        if (err) {
+            return res.send({
+                code: 500,
+                msg: '服务器错了啊！'
+            })
+        }
+        res.send({
+            code: 200,
+            msg: '编辑成功'
+        })
+    })
+}

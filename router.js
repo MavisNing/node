@@ -15,7 +15,14 @@ router.get('/signin', cUser.showLogin)
       .post('/signin', cUser.handleLogin)
       .get('/', cTopic.showIndex)
       .get('/topic/create', cTopic.showCreateTopic)
-      .post('/createTopic', cTopic.handleTopicCreat);
+      .post('/createTopic', cTopic.handleTopicCreat)
+      .get('/signout', cUser.showSingnOut)
+      .get('/detail/topic/:TopicId', cTopic.showTopic)
+      .get('/topic/:TopicId/delete', cTopic.handleDeleteTopic)
+      .get('/topic/:TopicId/edit', cTopic.showEditTopic)
+      .post('/topic/edit/:TopicId', cTopic.handleEditTopic)
+      .get('/signup', cUser.showSignup)
+      .post('/signup', cUser.handleSignup);
 
 // 4. 导出路由对象
 module.exports = router;

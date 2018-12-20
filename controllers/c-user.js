@@ -4,22 +4,19 @@
 const mUser = require('../models/m-user');
 
 // 登录页
-exports.showLogin = (req, res) => {
+exports.showLogin = (req, res, next) => {
     res.render("signin.html");
 }
 
 // 表单数据处理
-exports.handleLogin = (req, res) => {
+exports.handleLogin = (req, res, next) => {
     // 接收表单数据
     const body = req.body;
     // console.log(body);
 
     mUser.sqlLogin(body.email, (err, results) => {
         if (err) {
-            return res.send({
-                code: 500,
-                msg: '服务器出现错误'
-            });
+            return next(err);
         }
 
         if (results.length === 0) {
@@ -48,7 +45,7 @@ exports.handleLogin = (req, res) => {
 }
 
 // 退出登录
-exports.showSingnOut = (req, res) => {
+exports.showSingnOut = (req, res, next) => {
     // 清除session中的user信息
     delete req.session.user;
     // 回到登录页
@@ -56,20 +53,17 @@ exports.showSingnOut = (req, res) => {
 }
 
 // 注册页
-exports.showSignup = (req, res) => {
+exports.showSignup = (req, res, next) => {
     res.render("signup.html");
 }
 
 // 表单处理
-exports.handleSignup = (req, res) => {
+exports.handleSignup = (req, res, next) => {
     const body = req.body;
     // 验证邮箱
     mUser.sqlLogin(body.email, (err, results) => {
         if (err) {
-            return res.send({
-                code: 500,
-                msg: '服务器出错啦'
-            });
+            return next(err);
         }
 
         if (results[0]) {
@@ -82,10 +76,7 @@ exports.handleSignup = (req, res) => {
         // 验证昵称
         mUser.sqlNickname(body.nickname, (err, results) => {
             if (err) {
-                return res.send({
-                    code: 500,
-                    msg: '服务器出错啦'
-                });
+                return next(err);
             }
             if (results[0]) {
                 return res.send({
@@ -97,10 +88,7 @@ exports.handleSignup = (req, res) => {
             // 可以注册账号
             mUser.sqlSignup(body, (err, results) => {
                 if (err) {
-                    return res.send({
-                        code: 500,
-                        msg: '服务器错误'
-                    });
+                    return next(err);
                 }
                 res.send({
                     code: 200,

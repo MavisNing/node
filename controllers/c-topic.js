@@ -4,15 +4,12 @@ const mTopic = require('../models/m-topic');
 
 
 // 文章列表页
-exports.showIndex = (req, res) => {
+exports.showIndex = (req, res, next) => {
 
     // 客户端的视图文件有没有导入
     mTopic.showTopic((err, results) => {
         if (err) {
-            return res.send({
-                code: 500,
-                msg: '服务器出错了!'
-            });
+            return next(err);
         }
         res.render("index.html", {
             list: results,
@@ -23,12 +20,12 @@ exports.showIndex = (req, res) => {
 }
 
 // 发布文章
-exports.showCreateTopic = (req, res) => {
+exports.showCreateTopic = (req, res, next) => {
     res.render("topic/create.html");
 }
 
 // 发布文章提交
-exports.handleTopicCreat = (req, res) => {  
+exports.handleTopicCreat = (req, res, next) => {  
     // 接收表单数据
     const body = req.body;
 
@@ -40,10 +37,7 @@ exports.handleTopicCreat = (req, res) => {
 
     mTopic.creatTopic(body, (err, results) => {
         if (err) {
-            return res.send({
-                code: 500,
-                msg: '服务器出错了!'
-            });
+            return next(err);
         }
         res.send({
             code: 200,
@@ -53,15 +47,12 @@ exports.handleTopicCreat = (req, res) => {
 }
 
 // 文章详情页
-exports.showTopic = (req, res) => {
+exports.showTopic = (req, res, next) => {
     // console.log(req.params);
     const body = req.params.TopicId;
     mTopic.handleShowTopic(body, (err, results) => {
         if (err) {
-            return res.send({
-                code: 500,
-                msg: '服务器出错啦！！'
-            })
+            return next(err);
         }
 
         res.render("topic/show.html", {
@@ -72,14 +63,11 @@ exports.showTopic = (req, res) => {
 }
 
 // 文章详情页删除功能
-exports.handleDeleteTopic = (req, res) => {
+exports.handleDeleteTopic = (req, res, next) => {
     const body = req.params.TopicId;
     mTopic.DeleteTopic(body, (err, results) => {
         if (err) {
-            return res.send({
-                code: 500,
-                msg: '服务器出错啦！！'
-            })
+            return next(err);
         }
         res.redirect("/");
     });  
@@ -87,14 +75,11 @@ exports.handleDeleteTopic = (req, res) => {
 
 // 文章详情页编辑功能
 // 读取
-exports.showEditTopic = (req, res) => {
+exports.showEditTopic = (req, res, next) => {
     const body = req.params.TopicId;
     mTopic.EditTopicShow(body, (err, results) => {
         if (err) {
-            return res.send({
-                code: 500,
-                msg: '服务器错了啊！'
-            })
+            return next(err);
         }
         res.render("topic/edit.html", {
             list: results[0]
@@ -102,15 +87,12 @@ exports.showEditTopic = (req, res) => {
     })
 }
 // 编辑
-exports.handleEditTopic = (req, res) => {
+exports.handleEditTopic = (req, res, next) => {
     const topicID = req.params.TopicId;
     const body = req.body;
     mTopic.EditTopic(body, topicID, (err, results) => {
         if (err) {
-            return res.send({
-                code: 500,
-                msg: '服务器错了啊！'
-            })
+            return next(err);
         }
         res.send({
             code: 200,
